@@ -13,6 +13,6 @@ public interface UserRepository {
     void insertUserRole(Long userId, Role role);
 
     boolean isTaskOwner(Long userId, Long taskId);
-    void deleteId(Long id);
+    void delete(Long id);
 
 }

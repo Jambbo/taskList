@@ -40,7 +40,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public void deleteId(Long id) {
+    public void delete(Long id) {
 
     }
 
