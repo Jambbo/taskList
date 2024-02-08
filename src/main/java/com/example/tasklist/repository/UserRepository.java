@@ -2,10 +2,12 @@ package com.example.tasklist.repository;
 
 import com.example.tasklist.domain.user.User;
 import com.example.tasklist.domain.user.Role;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
-
 public interface UserRepository {
+
     Optional<User> findById(Long id);
     Optional<User> findByUsername(String username);
     void update(User user);
