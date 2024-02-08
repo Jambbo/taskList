@@ -20,6 +20,8 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.security.Key;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -41,16 +43,19 @@ public class JwtTokenProvider {
     }
 
 
-    public String createAccessToken(Long userId, String username, Set<Role> roles){
-        Claims claims = (Claims) Jwts.claims().subject(username); // класс, который хранит инфу в юзере
-        claims.put("id",userId);
-        claims.put("roles", resolveRoles(roles));
-        Date now = new Date();
-        Date validity = new Date(now.getTime()+jwtProperties.getAccess());
+    public String createAccessToken(final Long userId,
+                                    final String username,
+                                    final Set<Role> roles) {
+        Claims claims = Jwts.claims() // класс который хранит инфу в юзере
+                .subject(username)
+                .add("id", userId)
+                .add("roles", resolveRoles(roles))
+                .build();
+        Instant validity = Instant.now()
+                .plus(jwtProperties.getAccess(), ChronoUnit.HOURS);
         return Jwts.builder()
                 .claims(claims)
-                .issuedAt(now)
-                .expiration(validity)
+                .expiration(Date.from(validity))
                 .signWith(key)
                 .compact();
     }
@@ -61,16 +66,16 @@ public class JwtTokenProvider {
                 .collect(Collectors.toList());
     }
     // не принимает роли, потому что нет необходимости, рефрештокен только обновляет пару токенов, он приходит и получает новый рефрешь токен и аксес токен, не зайдествуется для секьюрити для доступа к методам, првоерки пользователя
-    public String createRefreshToken(Long userId, String username){
-
-        Claims claims = (Claims) Jwts.claims().subject(username);
-        claims.put("id",userId);
-        Date now = new Date();
-        Date validity = new Date(now.getTime()+jwtProperties.getRefresh());
+    public String createRefreshToken(final Long userId, final String username) {
+        Claims claims = Jwts.claims()
+                .subject(username)
+                .add("id", userId)
+                .build();
+        Instant validity = Instant.now()
+                .plus(jwtProperties.getRefresh(), ChronoUnit.DAYS);
         return Jwts.builder()
                 .claims(claims)
-                .issuedAt(now)
-                .expiration(validity)
+                .expiration(Date.from(validity))
                 .signWith(key)
                 .compact();
     }

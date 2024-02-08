@@ -74,7 +74,7 @@ public class TaskRepositoryImpl implements TaskRepository {
                 // resultSet и возвращать объект Task
             }
         } catch (SQLException e) {
-            throw new ResourceMappingException("Error while finding user by id.");
+            throw new ResourceMappingException("Error while finding task by id.");
         }
     }
 
