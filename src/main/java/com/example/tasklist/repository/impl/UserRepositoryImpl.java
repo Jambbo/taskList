@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.Optional;
-@Repository
+//@Repository
 @RequiredArgsConstructor
 public class UserRepositoryImpl implements UserRepository {
 

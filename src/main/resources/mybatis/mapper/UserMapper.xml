@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--Связываем репозиторий юзера и этот файл маппера-->
+<mapper namespace="com.example.tasklist.repository.UserRepository">
+<!--Тег resultMap, который позволяет строки переводить в объекты, а также устанавливаем autoMapping=false чтобы избежать некоторых ошибок-->
+    <resultMap id="UserResultMap" type="com.example.tasklist.domain.user.User" autoMapping="false">
+<!-- Здесь мы пишем то как связываются колонки таблицы в селектах и как связывается объект-->
+<!--       связываем колонку айди с айди юзера, в репозиториях мы использовали элиасы, такие же названия и тут указывать-->
+        <id property="id" column="user_id"/>
+        <result property="name" column="user_name"/>
+        <result property="username" column="user_username"/>
+        <result property="password" column="user_password"/>
+<!--        Тут мы пытаемся достать и смапить енам, у енама есть единственное поле name и мы ему назначаем колонку user_role_role-->
+        <collection property="roles"
+                    ofType="com.example.tasklist.domain.user.Role"
+                    autoMapping="false">
+            <result property="name" column="user_role_role"/>
+        </collection>
+    <collection property="tasks"
+                ofType="com.example.tasklist.domain.task.Task"
+                resultMap="com.example.tasklist.repository.TaskRepository.TaskResultMap"
+                autoMapping="false"/>
+    </resultMap>
+<!--My batis сам еще понимает, что метод возвращает Optional и тоже будет возвращать Optional, а не User-->
+    <select id="findById" resultMap="UserResultMap">
+        SELECT     u.id              as user_id,
+        u.name            as user_name,
+        u.username        as user_username,
+        u.password        as user_password,
+        ur.role           as user_role_role,
+        t.id              as task_id,
+        t.title           as task_title,
+        t.description     as task_description,
+        t.expiration_date as task_expiration_date,
+        t.status          as task_status
+        FROM users u
+        LEFT JOIN users_roles ur on u.id = ur.user_id
+        LEFT JOIN users_tasks ut on u.id = ur.user_id
+        LEFT JOIN tasks t on t.id = ut.task_id
+        WHERE u.id = #{id}
+    </select>
+
+
+    <select id="findByUsername" resultMap="UserResultMap">
+        SELECT     u.id              as user_id,
+        u.name            as user_name,
+        u.username        as user_username,
+        u.password        as user_password,
+        ur.role           as user_role_role,
+        t.id              as task_id,
+        t.title           as task_title,
+        t.description     as task_description,
+        t.expiration_date as task_expiration_date,
+        t.status          as task_status
+        FROM users u
+        LEFT JOIN users_roles ur on u.id = ur.user_id
+        LEFT JOIN users_tasks ut on u.id = ur.user_id
+        LEFT JOIN tasks t on t.id = ut.task_id
+        WHERE u.username = #{username}
+    </select>
+
+    <update id="update">
+        UPDATE users
+        SET name = #{name},
+        username = #{username},
+        password = #{password},
+        WHERE id = #{id}
+    </update>
+
+
+<!--Необходимо указать keyProperty - это ключ который в таблице должен быть и keyColumn - это ключ который есть в объекте(айдишник)-->
+<!--И для того чтоб ставилось айди при создании записи и вставки в бд то следует использовать useGeneratedKeys="true", тоже самое было в методе create в репозитории(PreparedStatement.RETURN_GENERATED_KEYS)-->
+    <insert id="create" keyProperty="id" keyColumn="id" useGeneratedKeys="true">
+        INSERT INTO users(name, username, password)
+        VALUES(#{name},#{username},#{password})
+    </insert>
+
+    <insert id="insertUserRole">
+        INSERT INTO users_roles(user_id,role)
+        VALUES(#{userId},#{role})
+    </insert>
+
+    <select id="isTaskOwner" resultType="boolean">
+        SELECT exists(
+        SELECT 1
+        FROM users_tasks
+        WHERE user_id= #{userId}
+        AND task_id = #{taskId}
+        )
+    </select>
+
+    <delete id="delete">
+        DELETE FROM users
+        WHERE id = #{id}
+    </delete>
+    
+</mapper>

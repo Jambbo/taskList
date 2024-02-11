@@ -20,6 +20,8 @@
 		<hibernate-validator.version>8.0.0.Final</hibernate-validator.version>
 		<jakarta.version>3.0.2</jakarta.version>
 		<jjwt.version>0.12.5</jjwt.version>
+		<liquibase.version>4.26.0</liquibase.version>
+		<springdoc.version>2.3.0</springdoc.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -107,6 +109,17 @@
 			<artifactId>mybatis-spring-boot-starter</artifactId>
 			<version>3.0.3</version>
 		</dependency>
+		<dependency>
+			<groupId>org.liquibase</groupId>
+			<artifactId>liquibase-core</artifactId>
+			<version>${liquibase.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>${springdoc.version}</version>
+		</dependency>
+
 
 	</dependencies>
 
