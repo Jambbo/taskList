@@ -7,6 +7,8 @@ import com.example.tasklist.domain.exception.ResourceNotFoundException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -66,6 +68,13 @@ public class ControllerAdvice {
                 )));
         return exceptionBody;
     }
+
+    @ExceptionHandler(AuthenticationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ExceptionBody handleAuthenticationException(Authentication exception){
+        return new ExceptionBody("Authentication failed.");
+    }
+
     //Когда у нас происходит исключение, которое ни одно из тех, что сверху, то будет работать этот обработчик.
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

@@ -87,7 +87,7 @@ public class ApplicationConfig {
                             response.getWriter().write("Unauthorized.");
                         })
                 )
-                .authorizeHttpRequests(a -> a.requestMatchers("/api/v1/auth/**","swagger-ui/**").permitAll()
+                .authorizeHttpRequests(a -> a.requestMatchers("/api/v1/auth/**","swagger-ui/**","/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated())
                 .anonymous(AbstractHttpConfigurer::disable).addFilterBefore(new JwtTokenFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 
