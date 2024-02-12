@@ -1,5 +1,11 @@
 version: '3'
 
+volumes:
+  cache:
+    driver: local # докер при сборке автоматически создаст папку у себя и ее смапит на папку data( в редисе)
+  db-data:
+    driver: local
+
 services:
   app:
     build:
@@ -23,3 +29,14 @@ services:
       - POSTGRES_DB=tasklist
     volumes:  #передаем папку дб-инит внутрь контейнера в docker-entrypoint-initdb.d
       - ./src/main/resources/db-init:/docker-entrypoint-initdb.d
+      - db-data:/var/lib/postgresql/data #волюм который будет сохранять бд, по такому пути /var/lib/postgresql/data хранится в контейнере постгреса инфа о бд
+
+  redis:
+    image: redis:7.2-rc-alpine
+    restart: always
+    container_name: redis
+    ports:
+      - '6379:6379' #будем выносить наружу из контейнера порт редиса чтобы могли в локалхосте не скачивая редис на пк обращаться к редису который в докере
+    command: redis-server --save 20 1 --loglevel warning --requirepass bGFic2ZpdWFnaWxydWdiYWlmZGI=
+    volumes:
+      - cache:/data
