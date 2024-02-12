@@ -163,13 +163,14 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public boolean isTaskOwner(Long userId, Long taskId) {
         try{
-            Connection connection = dataSourceConfig.getConnection();
-            PreparedStatement statement = connection.prepareStatement(IS_TASK_OWNER);
+            Connection connection = dataSourceConfig.getConnection(); // установка соединения с бд
+            PreparedStatement statement = connection.prepareStatement(IS_TASK_OWNER);// задается подготовленный запрос с сиквел запросом
             statement.setLong(1,userId);
             statement.setLong(2,taskId);
+            // с помощью statement.executeQuery() выполняется SQL-запрос и результаты сохраняются в ResultSet
             try(ResultSet rs = statement.executeQuery()){
-                rs.next();
-                return rs.getBoolean(1);
+                rs.next();//переходит к 1 строке
+                return rs.getBoolean(1);// из первой строки результата метод извлекает значение первого столбца.
             }
         }catch (SQLException e){
             throw new ResourceMappingException("Error while checking if user is task owner.");

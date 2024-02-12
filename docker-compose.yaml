@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  app:
+    build:
+      context: .
+    container_name: tasklist
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/tasklist?currentSchema=tasklist
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+#     проброс портов -> / тобиж из нашей машины мы сможем по порту 8080 обратиться к порту 8080 внутри контейнера
+    ports:
+      - '8080:8080'
+  db:
+    image: postgres:15.1-alpine
+    container_name: postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=tasklist
+    volumes:  #передаем папку дб-инит внутрь контейнера в docker-entrypoint-initdb.d
+      - ./src/main/resources/db-init:/docker-entrypoint-initdb.d
