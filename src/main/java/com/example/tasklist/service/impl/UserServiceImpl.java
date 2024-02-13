@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService {
     })
     public User update(User user) { //тут от пользователя приходит сырой пароль и нам нужно его захешировать и будет сохранятся в базу данных
        user.setPassword(passwordEncoder.encode(user.getPassword()));
-       userRepository.update(user);
+       userRepository.save(user);
        return user;
     }
 
@@ -75,10 +75,9 @@ public class UserServiceImpl implements UserService {
             throw new IllegalStateException("Password and password confirmation do not match.");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.create(user);
         Set<Role> roles = Set.of(Role.ROLE_USER);
-        userRepository.insertUserRole(user.getId(),Role.ROLE_USER);
         user.setRoles(roles);
+        userRepository.save(user);
         return user;
     }
 
@@ -93,6 +92,6 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @CacheEvict(value = "UserService::getById",key="#id")
     public void delete(Long id) {
-        userRepository.delete(id);
+        userRepository.deleteById(id);
     }
 }

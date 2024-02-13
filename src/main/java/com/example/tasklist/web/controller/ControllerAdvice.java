@@ -1,9 +1,6 @@
 package com.example.tasklist.web.controller;
 
-import com.example.tasklist.domain.exception.AccessDeniedException;
-import com.example.tasklist.domain.exception.ExceptionBody;
-import com.example.tasklist.domain.exception.ResourceMappingException;
-import com.example.tasklist.domain.exception.ResourceNotFoundException;
+import com.example.tasklist.domain.exception.*;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
@@ -72,14 +69,21 @@ public class ControllerAdvice {
     @ExceptionHandler(AuthenticationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ExceptionBody handleAuthenticationException(AuthenticationException e){
-        e.printStackTrace();
         return new ExceptionBody("Authentication failed.");
     }
+
+    @ExceptionHandler(ImageUploadException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ExceptionBody handleImageUploadException(ImageUploadException e){
+        return new ExceptionBody(e.getMessage());
+    }
+
 
     //Когда у нас происходит исключение, которое ни одно из тех, что сверху, то будет работать этот обработчик.
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ExceptionBody handleException(Exception e){
+        e.printStackTrace();
         return new ExceptionBody("Internal error. ");
     }
 
