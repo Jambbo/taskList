@@ -18,7 +18,7 @@ services:
       - redis
     env_file:
       - .env #приложение будет смотреть все необходимые переменные в .енв файле
-#     проброс портов -> / тобиж из нашей машины мы сможем по порту 8080 обратиться к порту 8080 внутри контейнера
+    #     проброс портов -> / тобиж из нашей машины мы сможем по порту 8080 обратиться к порту 8080 внутри контейнера
     ports:
       - '8080:8080'
   db:
@@ -28,7 +28,7 @@ services:
       - POSTGRES_USER=${POSTGRES_USERNAME}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DATABASE}
-    volumes:  #передаем папку дб-инит внутрь контейнера в docker-entrypoint-initdb.d
+    volumes: #передаем папку дб-инит внутрь контейнера в docker-entrypoint-initdb.d
       - ./src/main/resources/db-init:/docker-entrypoint-initdb.d
       - db-data:/var/lib/postgresql/data #волюм который будет сохранять бд, по такому пути /var/lib/postgresql/data хранится в контейнере постгреса инфа о бд
 
