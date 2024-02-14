@@ -19,10 +19,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
-import java.security.Key;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,7 +36,7 @@ public class JwtTokenProvider {
     private SecretKey key;
 
     @PostConstruct
-    public void init(){
+    public void init() {
         this.key = Keys.hmacShaKeyFor(jwtProperties.getSecret().getBytes());// в этой строке ->
         // берется из jwtProperties секретный ключ, превращается в массив байт и ->
         //метод hmacShaKeyFor принимает именно массив байтов секретного ключа и использует его для создания экземпляра "Key" для алгоритма HMAC SHA
@@ -60,11 +61,12 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    private List<String> resolveRoles(Set<Role> roles){
+    private List<String> resolveRoles(Set<Role> roles) {
         return roles.stream()
                 .map(Enum::name)
                 .collect(Collectors.toList());
     }
+
     // не принимает роли, потому что нет необходимости, рефрештокен только обновляет пару токенов, он приходит и получает новый рефрешь токен и аксес токен, не зайдествуется для секьюрити для доступа к методам, првоерки пользователя
     public String createRefreshToken(final Long userId, final String username) {
         Claims claims = Jwts.claims()
@@ -80,30 +82,30 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public JwtResponse refreshUserTokens(String refreshToken){
+    public JwtResponse refreshUserTokens(String refreshToken) {
         JwtResponse jwtResponse = new JwtResponse();
-        if(!validateToken(refreshToken)){
+        if (!validateToken(refreshToken)) {
             throw new AccessDeniedException();
         }
         Long userId = Long.valueOf(getId(refreshToken));
         User user = userService.getById(userId);
         jwtResponse.setId(userId);
         jwtResponse.setUsername(user.getUsername());
-        jwtResponse.setAccessToken(createAccessToken(userId,user.getUsername(),user.getRoles()));
-        jwtResponse.setRefreshToken(createRefreshToken(userId,user.getUsername()));
+        jwtResponse.setAccessToken(createAccessToken(userId, user.getUsername(), user.getRoles()));
+        jwtResponse.setRefreshToken(createRefreshToken(userId, user.getUsername()));
         return jwtResponse;
     }
 
     public boolean validateToken(final String token) {
-            Jws<Claims> claims = Jwts
-                    .parser()
-                    .verifyWith(key)
-                    .build()
-                    .parseSignedClaims(token); // возвращает содержимое(payload), если подпись верифицирован успешно
-            return !claims.getPayload().getExpiration().before(new Date());
+        Jws<Claims> claims = Jwts
+                .parser()
+                .verifyWith(key)
+                .build()
+                .parseSignedClaims(token); // возвращает содержимое(payload), если подпись верифицирован успешно
+        return !claims.getPayload().getExpiration().before(new Date());
     }
 
-    private String getId(String token){
+    private String getId(String token) {
         return Jwts
                 .parser()
                 .verifyWith(key)
@@ -113,6 +115,7 @@ public class JwtTokenProvider {
                 .get("id")
                 .toString();
     }
+
     private String getUsername(String token) {
         return Jwts
                 .parser()
@@ -125,15 +128,12 @@ public class JwtTokenProvider {
     //Вообще токен можно сравнить с http запросом. Есть тело запроса, заголовок запроса и таким образом хранится информация о токене/запросе.
 
 
-
     //Этот метод будет возвращать аутентификацию которая нужна нам для того чтобы спрингу предоставить инфу о пользователе которого мы проверили.
-    public Authentication getAuthentication(String token){
+    public Authentication getAuthentication(String token) {
         String username = getUsername(token);
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-        return new UsernamePasswordAuthenticationToken(userDetails,"",userDetails.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
-
-
 
 
 }

@@ -1,0 +1,25 @@
+name: maven-build
+#чек выполняется в случаях ниже, тоби ж на пуше или пул реквесте
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  checkstyle:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: 17
+      - uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: maven-${{ hashFiles('**/pom.xml')}} #тут описываем как будут
+          #хешироваться файлы, указываем помник, то есть нужно хешировать то что используется в помнике, чтобы не скачивать дважды
+          restore-keys: |
+            maven-
+      - run: mvn clean install #на пуше или пуле в мейн будет запускаться mvn clean install на этом проекте
