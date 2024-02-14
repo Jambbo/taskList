@@ -15,13 +15,13 @@ public class CustomSecurityExceptionHandler extends DefaultMethodSecurityExpress
     private final AuthenticationTrustResolver trustResolver = new AuthenticationTrustResolverImpl();
 
     @Override
-    protected MethodSecurityExpressionOperations createSecurityExpressionRoot(Authentication authentication, MethodInvocation invocation) {
-        CustomMethodSecurityExpressionRoot root = new CustomMethodSecurityExpressionRoot(authentication);
-        root.setTrustResolver(trustResolver);
-        root.setPermissionEvaluator(getPermissionEvaluator());// сетаем тот объект который будет обрабатывать выражения
-        root.setRoleHierarchy(getRoleHierarchy());
-        root.setUserService(this.applicationContext.getBean(UserService.class));
-        return root;
+    protected MethodSecurityExpressionOperations createSecurityExpressionRoot(Authentication authentication, MethodInvocation invocation){
+            CustomMethodSecurityExpressionRoot root = new CustomMethodSecurityExpressionRoot(authentication);
+            root.setTrustResolver(trustResolver);
+            root.setPermissionEvaluator(getPermissionEvaluator());// сетаем тот объект который будет обрабатывать выражения
+            root.setRoleHierarchy(getRoleHierarchy());
+            root.setUserService(this.applicationContext.getBean(UserService.class));
+            return root;
     }
 
     @Override

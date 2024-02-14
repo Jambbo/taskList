@@ -4,6 +4,7 @@ import com.example.tasklist.domain.exception.*;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -19,44 +20,43 @@ public class ControllerAdvice {
 
     @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)// Все ошибки которые выбрасываются мы помечаем @ResponseStatus
-    public ExceptionBody handleResourceNotFound(ResourceNotFoundException e) {
+    public ExceptionBody handleResourceNotFound(ResourceNotFoundException e){
         return new ExceptionBody(e.getMessage());
     }
-
     @ExceptionHandler(ResourceMappingException.class)
     //Это когда мы не можем смепить, тобиж проблема на стороне сервера
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)// Все ошибки которые выбрасываются мы помечаем @ResponseStatus
-    public ExceptionBody handleResourceMapping(ResourceMappingException e) {
+    public ExceptionBody handleResourceMapping(ResourceMappingException e){
         return new ExceptionBody(e.getMessage());
     }
 
     //Обрабатываем IllegalStateException, который мы выбрасываем если у нас не совпадают пароли или если пользователь зарегистрирован
     @ExceptionHandler(IllegalStateException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ExceptionBody handleIllegalState(IllegalStateException e) {
-        return new ExceptionBody(e.getMessage());
+    public ExceptionBody handleIllegalState(IllegalStateException e){
+            return new ExceptionBody(e.getMessage());
     }
 
     //Это исключение будет выбрасываться когда не подходит токен либо не прошла авторизация
-    @ExceptionHandler({AccessDeniedException.class, org.springframework.security.access.AccessDeniedException.class})
+    @ExceptionHandler({AccessDeniedException.class,org.springframework.security.access.AccessDeniedException.class})
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ExceptionBody handleAccessDenied() {
+    public ExceptionBody handleAccessDenied(){
         return new ExceptionBody("Access denied.");
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ExceptionBody handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+    public ExceptionBody handleMethodArgumentNotValidException(MethodArgumentNotValidException e){
         ExceptionBody exceptionBody = new ExceptionBody("Validation failed.");
         List<FieldError> errors = e.getBindingResult().getFieldErrors();//То есть ошибки связанные с полями
-        exceptionBody.setErrors(errors.stream().collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage)));
+        exceptionBody.setErrors(errors.stream().collect(Collectors.toMap(FieldError::getField,FieldError::getDefaultMessage)));
         //Тоби ж буде возвращаться сообщение об ошибках и сами поля
         return exceptionBody;
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ExceptionBody handleConstraintViolation(ConstraintViolationException e) {
+    public ExceptionBody handleConstraintViolation(ConstraintViolationException e){
         ExceptionBody exceptionBody = new ExceptionBody("Validation failed.");
         exceptionBody.setErrors(e.getConstraintViolations().stream()
                 .collect(Collectors.toMap(
@@ -68,13 +68,13 @@ public class ControllerAdvice {
 
     @ExceptionHandler(AuthenticationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ExceptionBody handleAuthenticationException(AuthenticationException e) {
+    public ExceptionBody handleAuthenticationException(AuthenticationException e){
         return new ExceptionBody("Authentication failed.");
     }
 
     @ExceptionHandler(ImageUploadException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ExceptionBody handleImageUploadException(ImageUploadException e) {
+    public ExceptionBody handleImageUploadException(ImageUploadException e){
         return new ExceptionBody(e.getMessage());
     }
 
@@ -82,7 +82,7 @@ public class ControllerAdvice {
     //Когда у нас происходит исключение, которое ни одно из тех, что сверху, то будет работать этот обработчик.
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ExceptionBody handleException(Exception e) {
+    public ExceptionBody handleException(Exception e){
         e.printStackTrace();
         return new ExceptionBody("Internal error. ");
     }

@@ -23,7 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/users")
 @Validated
-@Tag(name = "User Controller", description = "User API")
+@Tag(name = "User Controller",description = "User API")
 public class UserController {
 
     private final UserService userService;
@@ -35,17 +35,17 @@ public class UserController {
     @PutMapping
     @Operation(summary = "Update user")
     @PreAuthorize("@customSecurityExpression.canAccessUser(#dto.id)")
-    public UserDto update(@Validated(OnUpdate.class) @RequestBody UserDto userDto) {
-        User user = userMapper.toEntity(userDto);
-        User updatedUser = userService.update(user);
-        return userMapper.toDto(updatedUser);
+    public UserDto update(@Validated(OnUpdate.class)@RequestBody UserDto userDto){
+            User user = userMapper.toEntity(userDto);
+            User updatedUser = userService.update(user);
+            return userMapper.toDto(updatedUser);
     }
 
 
     @GetMapping("/{id}")
     @Operation(summary = "Get UserDto by id")
     @PreAuthorize("@customSecurityExpression.canAccessUser(#id)")
-    public UserDto getById(@PathVariable Long id) {
+    public UserDto getById(@PathVariable Long id){
         User user = userService.getById(id);
         return userMapper.toDto(user);
     }
@@ -54,7 +54,7 @@ public class UserController {
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete user by id")
     @PreAuthorize("@customSecurityExpression.canAccessUser(#id)")
-    public void deleteById(@PathVariable Long id) {
+    public void deleteById(@PathVariable Long id){
         userService.delete(id);
     }
 
@@ -62,7 +62,7 @@ public class UserController {
     @GetMapping("/{id}/tasks")
     @Operation(summary = "Get all User tasks")
     @PreAuthorize("@customSecurityExpression.canAccessUser(#id)")
-    public List<TaskDto> getTasksByUserId(@PathVariable Long id) {
+    public List<TaskDto> getTasksByUserId(@PathVariable Long id){
         List<Task> tasks = taskService.getAllByUserId(id);
         return taskMapper.toDto(tasks);
     }

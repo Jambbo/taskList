@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
-<!DOCTYPE suppressions PUBLIC "-//Checkstyle//DTD SuppressionFilter Configuration 1.2//EN"
-        "https://checkstyle.org/dtds/suppressions_1_2.dtd">
+<!DOCTYPE suppressions PUBLIC "-//Checkstyle//DTD SuppressionFilter Configuration 1.2//EN" "https://checkstyle.org/dtds/suppressions_1_2.dtd">
 <suppressions>
     <suppress checks="MissingJavadocMethod"/>
     <suppress checks="JavadocPackage"/>
@@ -8,7 +7,6 @@
     <suppress checks="DesignForExtension"/>
     <suppress checks="HideUtilityClassConstructor"/>
     <suppress checks="MagicNumber"/> <!--Использование случайных чисел которые не переменные строгое правило-->
-    <suppress
-            checks="HiddenField"/> <!--Тут мы не хотим проверку на хидденфилд(проверка на то что в конструкторе совпадает названия полей с названиями полей классов -->
+    <suppress checks="HiddenField"/> <!--Тут мы не хотим проверку на хидденфилд(проверка на то что в конструкторе совпадает названия полей с названиями полей классов -->
 </suppressions>
-        <!--В этом файле описаны ограничения которые мы не хотим использовать на данный момент для чекстайла -->
+<!--В этом файле описаны ограничения которые мы не хотим использовать на данный момент для чекстайла -->

@@ -7,6 +7,7 @@ import com.example.tasklist.service.UserService;
 import com.example.tasklist.web.dto.auth.JwtRequest;
 import com.example.tasklist.web.dto.auth.JwtResponse;
 import com.example.tasklist.web.security.JwtTokenProvider;
+import io.jsonwebtoken.Jwt;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,6 +22,7 @@ public class AuthServiceImpl implements AuthService {
     private final JwtTokenProvider jwtTokenProvider;
 
 
+
     @Override
     public JwtResponse login(JwtRequest loginRequest) {
         JwtResponse jwtResponse = new JwtResponse();
@@ -32,7 +34,7 @@ public class AuthServiceImpl implements AuthService {
             jwtResponse.setAccessToken(jwtTokenProvider.createAccessToken(user.getId(), user.getUsername(), user.getRoles()));
             jwtResponse.setRefreshToken(jwtTokenProvider.createRefreshToken(user.getId(), user.getUsername()));
             return jwtResponse;
-        } catch (Exception e) {
+        }catch (Exception e){
             e.printStackTrace();
             throw new AccessDeniedException();
         }

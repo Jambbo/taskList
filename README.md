@@ -1,21 +1,17 @@
 # Tasklist
-
 This application helps you organize creating and accessing tasks for users.
 
 You can access Swagger and see all available endpoints by visiting http://localhost:8080/swagger-ui/index.html
 
 ## Sequence diagram
-
 ![Sequence diagram](docs/sequence-diagram.png)
 
 ## Component diagram
-
 ![Component diagram](docs/component-diagram.png)
 
 Main application communicates with cache (we use Redis), database (we use Postgresql), storage (we use MinIO).
 
 ## Class diagram
-
 ![Class diagram](docs/class-diagram.png)
 
 We have two main classes - **User** and **Task**.
@@ -29,7 +25,6 @@ User can have roles - `ROLE_USER` or `ROLE_ADMIN`.
 Task can have images.
 
 ## Environments
-
 To run this application you need to create `.env` file in root directory with next environments:
 
 - `HOST` - host of Postgresql database

@@ -31,7 +31,6 @@ public class TaskDto {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime expirationDate;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-//тобиж мы не сетаем картинки из наружи, мы изменяем это с помощью контроллера
+    @JsonProperty(access= JsonProperty.Access.READ_ONLY)//тобиж мы не сетаем картинки из наружи, мы изменяем это с помощью контроллера
     private List<String> images;
 }

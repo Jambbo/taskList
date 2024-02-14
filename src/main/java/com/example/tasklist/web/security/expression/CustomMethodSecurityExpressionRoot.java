@@ -29,10 +29,10 @@ public class CustomMethodSecurityExpressionRoot extends SecurityExpressionRoot i
 
     @Override
     public void setFilterObject(Object filterObject) {
-        this.filterObject = filterObject;
+        this.filterObject=filterObject;
     }
 
-    public boolean canAccessUser(Long id) {
+    public boolean canAccessUser(Long id){
 //Тут в объекте аутентификейшен хранится та аутентификация, которую мы в JwtTokenProvider задавали(метод getAuthentication)
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -41,25 +41,24 @@ public class CustomMethodSecurityExpressionRoot extends SecurityExpressionRoot i
 
         return userId.equals(id) || hasAnyRole(authentication, Role.ROLE_ADMIN);
     }
-
-    private boolean hasAnyRole(Authentication authentication, Role... roles) {
-        for (Role role : roles) {
+    private boolean hasAnyRole(Authentication authentication,Role... roles){
+        for (Role role:roles){
             SimpleGrantedAuthority authority = new SimpleGrantedAuthority(role.name());
-            if (authentication.getAuthorities().contains(authority)) {
+            if(authentication.getAuthorities().contains(authority)){
                 return true;
             }
         }
         return false;
     }
 
-    public boolean canAccessTask(Long taskId) {
+    public boolean canAccessTask(Long taskId){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         JwtEntity user = (JwtEntity) authentication.getPrincipal();
 
         Long userId = user.getId();
 
-        return userService.isTaskOwner(userId, taskId);
+        return userService.isTaskOwner(userId,taskId);
     }
 
     @Override
