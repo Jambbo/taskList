@@ -19,15 +19,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -49,19 +46,19 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+    public AuthenticationManager authenticationManager(final AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
 
     @Bean
-    public MethodSecurityExpressionHandler expressionHandler(){
+    public MethodSecurityExpressionHandler expressionHandler() {
         DefaultMethodSecurityExpressionHandler expressionHandler = new CustomSecurityExceptionHandler();
         expressionHandler.setApplicationContext(applicationContext);
         return expressionHandler;
     }
 
     @Bean
-    public MinioClient minioClient(){
+    public MinioClient minioClient() {
         return MinioClient.builder()
                 .endpoint(minioProperties.getUrl())
                 .credentials(minioProperties.getAccessKey(), minioProperties.getSecretKey())
@@ -69,13 +66,12 @@ public class ApplicationConfig {
     }
 
 
-
     //бин для сваггера
     //Так как у нас приложение работает с аутентификацией JWT токенов, поэтому нам необходимо добавить
     // конфигурацию, чтобы можно было авторизовываться и не вводить каждый раз JWT токен, а 1 раз его ввести
     // в headerе этой страницы
     @Bean
-    public OpenAPI openAPI(){
+    public OpenAPI openAPI() {
         return new OpenAPI()
                 .addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
                 .components(new Components()
@@ -94,7 +90,7 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+    public SecurityFilterChain filterChain(final HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
@@ -109,7 +105,7 @@ public class ApplicationConfig {
                             response.getWriter().write("Unauthorized.");
                         })
                 )
-                .authorizeHttpRequests(a -> a.requestMatchers("/api/v1/auth/**","swagger-ui/**","/v3/api-docs/**").permitAll()
+                .authorizeHttpRequests(a -> a.requestMatchers("/api/v1/auth/**", "swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated())
                 .anonymous(AbstractHttpConfigurer::disable).addFilterBefore(new JwtTokenFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 

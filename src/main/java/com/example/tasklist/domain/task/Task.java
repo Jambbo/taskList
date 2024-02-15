@@ -1,7 +1,6 @@
 package com.example.tasklist.domain.task;
 
 import jakarta.persistence.*;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(name="tasks")
+@Table(name = "tasks")
 @Getter
 @Setter
 public class Task implements Serializable {
@@ -21,13 +20,13 @@ public class Task implements Serializable {
     private String title;
     private String description;
 
-    @Enumerated(value=EnumType.STRING)
+    @Enumerated(value = EnumType.STRING)
     private Status status;
 
     private LocalDateTime expirationDate;
 
-    @Column(name="image")
-    @CollectionTable(name="tasks_images")
+    @Column(name = "image")
+    @CollectionTable(name = "tasks_images")
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> images;
 }

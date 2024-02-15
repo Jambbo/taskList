@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Data
-@ConfigurationProperties(prefix="minio")
+@ConfigurationProperties(prefix = "minio")
 public class MinioProperties {
 
     private String bucket;
