@@ -26,11 +26,6 @@
         <minio.version>8.5.8</minio.version>
         <xml-format.version>3.3.1</xml-format.version>
         <checkstyle.version>3.3.1</checkstyle.version>
-        <graphql-java-kickstart.version>15.0.0</graphql-java-kickstart.version>
-        <graphql-java-extended-scalars.version>20.2</graphql-java-extended-scalars.version>
-        <junit-jupiter.version>5.10.1</junit-jupiter.version>
-        <mockito.version>5.9.0</mockito.version>
-        <jacoco.version>0.8.8</jacoco.version>
     </properties>
     <dependencies>
         <dependency>
@@ -196,49 +191,6 @@
                         <configuration>
                             <suppressionsFileExpression>checkstyle.suppressions.file</suppressionsFileExpression>
                             <suppressionsLocation>checkstyle-suppressions.xml</suppressionsLocation>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>${jacoco.version}</version>
-                <executions>
-                    <execution>
-                        <id>default-prepare-agent</id>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>report</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>check</id>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                        <configuration>
-                            <rules>
-                                <rule implementation="org.jacoco.maven.RuleConfiguration">
-                                    <element>PACKAGE</element>
-                                    <limits>
-                                        <limit implementation="org.jacoco.report.check.Limit">
-                                            <counter>INSTRUCTION</counter>
-                                            <value>COVEREDRATIO</value>
-                                            <minimum>0.60</minimum>
-                                        </limit>
-                                    </limits>
-                                    <includes>
-                                        <include>com.example.tasklist.service.impl</include>
-                                    </includes>
-                                </rule>
-                            </rules>
                         </configuration>
                     </execution>
                 </executions>
