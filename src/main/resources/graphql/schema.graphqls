@@ -1,0 +1,16 @@
+type Query {
+    userById(id: ID): User #будем получать юзера по айди, передаем айди типа ID(тип в котором может быть и число и UUID либо другой любой формат), возвращаемый тип User
+    tasksByUserId(id: ID): [Task]
+    taskById(id: ID): Task
+}
+#GraphQL не работает с мультипарт файлами, то есть загрузка фотографий будет происходить через REST
+#и авторизацию оставляем тоже через REST
+
+#Тут описываем ПОСТ и ПУТ методы
+type Mutation {
+    updateUser(dto: InputUser): User
+    deleteUser(id: ID): Boolean #в GraphQL нет void, те методы которые void, они возвращают boolean, потому что там nullable
+    createTask(id: ID dto: InputTask): Task
+    updateTask(dto: InputTask): Task
+    deleteTask(id: ID): Boolean
+}
