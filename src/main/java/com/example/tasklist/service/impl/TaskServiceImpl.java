@@ -23,7 +23,7 @@ import java.util.List;
 public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
-    private final UserService userService;
+//    private final UserService userService;
     private final ImageService imageService;
 
     //Там, где гет-методы следует ставить аннотацию Transactional(readOnly=true), просто чтоб дать спрингу понять как работать с этим
@@ -62,13 +62,14 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional
-    @Cacheable(value = "TaskService::getById", key = "#task.id")
+    @Cacheable(value = "TaskService::getById",condition = "#task.id!=null", key = "#task.id")
     public Task create(Task task, Long userId) {
-        User user = userService.getById(userId);
-        task.setStatus(Status.TODO);
-        user.getTasks().add(task);
-        userService.update(user);
-        return task;
+     if(task.getStatus()!=null){
+         task.setStatus(Status.TODO);
+     }
+     taskRepository.save(task);
+     taskRepository.assignTask(userId,task.getId());
+     return task;
     }
 
     @Override
@@ -82,9 +83,7 @@ public class TaskServiceImpl implements TaskService {
     @Transactional //вешается эта аннотация т.к. она меняет состояние бд
     @CacheEvict(value = "TaskService::getById", key = "#id")
     public void uploadImage(Long id, TaskImage image) {
-        Task task = getById(id);
         String fileName = imageService.upload(image);
-        task.getImages().add(fileName);
-        taskRepository.save(task);
+        taskRepository.addImage(id,fileName);
     }
 }
