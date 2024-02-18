@@ -38,7 +38,8 @@ public class ApplicationConfig {
 
     private final ApplicationContext applicationContext;
     private final JwtTokenProvider jwtTokenProvider;
-    private final MinioProperties minioProperties;//подтягиваем те проперти из апликейшен.ямл явно и юзаем их
+    private final MinioProperties minioProperties; //подтягиваем те проперти
+    // из апликейшен.ямл явно и юзаем их
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -46,13 +47,16 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(final AuthenticationConfiguration configuration) throws Exception {
+    public AuthenticationManager authenticationManager(
+            final AuthenticationConfiguration configuration)
+            throws Exception {
         return configuration.getAuthenticationManager();
     }
 
     @Bean
     public MethodSecurityExpressionHandler expressionHandler() {
-        DefaultMethodSecurityExpressionHandler expressionHandler = new CustomSecurityExceptionHandler();
+        DefaultMethodSecurityExpressionHandler expressionHandler =
+                new CustomSecurityExceptionHandler();
         expressionHandler.setApplicationContext(applicationContext);
         return expressionHandler;
     }
@@ -61,14 +65,17 @@ public class ApplicationConfig {
     public MinioClient minioClient() {
         return MinioClient.builder()
                 .endpoint(minioProperties.getUrl())
-                .credentials(minioProperties.getAccessKey(), minioProperties.getSecretKey())
+                .credentials(minioProperties.getAccessKey(),
+                             minioProperties.getSecretKey())
                 .build();
     }
 
 
     //бин для сваггера
-    //Так как у нас приложение работает с аутентификацией JWT токенов, поэтому нам необходимо добавить
-    // конфигурацию, чтобы можно было авторизовываться и не вводить каждый раз JWT токен, а 1 раз его ввести
+    //Так как у нас приложение работает с аутентификацией JWT токенов,
+    // поэтому нам необходимо добавить
+    // конфигурацию, чтобы можно было авторизовываться и не вводить каждый раз
+    // JWT токен, а 1 раз его ввести
     // в headerе этой страницы
     @Bean
     public OpenAPI openAPI() {
